@@ -11,7 +11,21 @@ resource "aws_lb" "nginx_alb" {
   enable_cross_zone_load_balancing = true
 
   tags = {
-    Name = "${var.env}-alb"
+    Name = "${var.environment}-alb"
+  }
+}
+
+resource "aws_security_group" "ecs-sgrp" {
+  name        = "sgrp-web-server"
+  description = "Allow HTTP inbound traffic"
+  vpc_id      = aws_vpc.vpc.id
+
+  egress {
+    description = "outbound traffic"
+    from_port   = 0
+    to_port     = 65535
+    protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
   }
 }
 
@@ -38,8 +52,4 @@ resource "aws_lb_target_group" "nginx_target_group" {
 
 }
 
-resource "aws_lb_target_group_attachment" "nginx_target_group_attachment" {
-  target_group_arn = aws_lb_target_group.nginx_target_group.arn
-  target_id        = aws_ecs_service.nginx_service.name
 
-}
