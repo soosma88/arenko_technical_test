@@ -1,9 +1,9 @@
 resource "aws_lb" "nginx_alb" {
-  name               = "nginx-alb"
+  name               = "${var.environment}-nginx-alb"
   internal           = false
   load_balancer_type = "application"
   subnets            = [aws_subnet.public-1.id, aws_subnet.public-2.id]
-  security_groups    = [aws_security_group.ecs-sgrp.id]
+  security_groups    = [aws_security_group.ecs_sgrp.id]
 
   enable_deletion_protection = false
 
@@ -11,24 +11,11 @@ resource "aws_lb" "nginx_alb" {
   enable_cross_zone_load_balancing = true
 
   tags = {
-    Name = "${var.environment}-alb"
+    Name = "${var.environment}-nginx-alb"
   }
 }
 
-resource "aws_security_group" "ecs-sgrp" {
-  name        = "sgrp-web-server"
-  description = "Allow HTTP inbound traffic"
-  vpc_id      = aws_vpc.vpc.id
-
-  egress {
-    description = "outbound traffic"
-    from_port   = 0
-    to_port     = 65535
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-}
-
+### Default Listener rule ###
 resource "aws_lb_listener" "nginx_listener" {
   load_balancer_arn = aws_lb.nginx_alb.arn
   port              = 80

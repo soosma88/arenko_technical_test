@@ -1,9 +1,9 @@
 resource "aws_db_instance" "rds" {
   allocated_storage      = 10
-  db_subnet_group_name   = aws_db_subnet_group.subnet_group.id
+  db_subnet_group_name   = aws_db_subnet_group.postgres_rds.id
   engine                 = "postgres"
-  engine_version         = "postgres13"
-  instance_class         = "db.t2.micro"
+  engine_version         = "postgres17"
+  instance_class         = "db.t4g.micro"
   multi_az               = true
   db_name                = "mydb"
   username               = "username"
@@ -12,10 +12,9 @@ resource "aws_db_instance" "rds" {
   vpc_security_group_ids = [aws_security_group.database-sgrp.id]
 }
 
-resource "aws_db_subnet_group" "subnet_group" {
-  name       = "main"
-  subnet_ids = [aws_subnet.public-1.id, aws_subnet.public-2.id]
-
+resource "aws_db_subnet_group" "postgres_rds" {
+  name       = "postgres_rds"
+  subnet_ids = [aws_subnet.database-1.id, aws_subnet.database-2.id]
 }
 
 resource "aws_security_group" "database-sgrp" {
@@ -24,11 +23,11 @@ resource "aws_security_group" "database-sgrp" {
   vpc_id      = aws_vpc.vpc.id
 
   ingress {
-    description = "Allow traffic from application layer"
-    from_port   = 3306
-    to_port     = 3306
+    description = "Allow traffic from ecs application layer"
+    from_port   = 5432
+    to_port     = 5432
     protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+    security_groups = [aws_security_group.ecs_sgrp.id]
   }
 
   egress {
