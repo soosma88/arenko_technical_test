@@ -1,4 +1,4 @@
-# output "lb_dns_name" {
-#   description = "The DNS name of the load balancer"
-#   value       = aws_lb.elb.dns_name
-# }
+output "nginx_alb_dns_name" {
+  description = "The Public DNS name of the nginx public load balancer"
+  value       = aws_lb.nginx_alb.dns_name
+}
