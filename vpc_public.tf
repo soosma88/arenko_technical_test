@@ -4,6 +4,8 @@ resource "aws_subnet" "public-1" {
   cidr_block              = "10.0.0.0/24"
   availability_zone       = "eu-west-2a"
   map_public_ip_on_launch = true
+
+  tags = { Name = "public-1" }
 }
 
 resource "aws_route_table_association" "public-1" {
@@ -16,6 +18,8 @@ resource "aws_subnet" "public-2" {
   cidr_block              = "10.0.1.0/24"
   availability_zone       = "eu-west-2b"
   map_public_ip_on_launch = true
+
+  tags = { Name = "public-2" }
 }
 
 resource "aws_route_table_association" "public-2" {
