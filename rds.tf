@@ -6,7 +6,7 @@ resource "aws_db_instance" "rds" {
   instance_class         = "db.t4g.micro" # Set to latest db instance class
   multi_az               = true
   db_name                = "${var.environment}-mydb"
-  username               = "db_admin"
+  username               = "${var.environment}_db_admin"
   password               = random_password.prod_postgresql_db_password.result # Use Generated Password for master password
   skip_final_snapshot    = true
   vpc_security_group_ids = [aws_security_group.database-sgrp.id]
